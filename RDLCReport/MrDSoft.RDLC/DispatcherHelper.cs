@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace DSoft.RDLCReport
@@ -10,39 +6,45 @@ namespace DSoft.RDLCReport
     /// <summary>
     /// WPF UI Dispatcher
     /// <remarks>
-    /// CREDIT : Alex Petrescu 2010, Modified 2014 by Derek Tremblay
+    /// CREDIT : Alex Petrescu 2010, Modified 2014 and 2018 by Derek Tremblay
     /// PROFIL : http://social.msdn.microsoft.com/profile/alex%20petrescu/?ws=usercard-inline
     /// http://social.msdn.microsoft.com/Forums/fr-FR/248a3258-e3ec-4ba2-9085-2fda2f0b0058/wpf-faq-applicationdoevents-dans-wpf?forum=wpffr
     /// </remarks>
     /// </summary>
-    public class DispatcherHelper
+    public static class DispatcherHelper
     {
-        private static DispatcherOperationCallback exitFrameCallback = new DispatcherOperationCallback(ExitFrame);
-        
+        private static readonly DispatcherOperationCallback ExitFrameCallback = ExitFrame;
+
         /// <summary>
         /// Execute all message in message Queud
         /// </summary>
-        public static void DoEvents()
-        {            
-            DispatcherFrame nestedFrame = new DispatcherFrame();
-            
-            DispatcherOperation exitOperation = Dispatcher.CurrentDispatcher.BeginInvoke( DispatcherPriority.Background, exitFrameCallback, nestedFrame);
+        public static void DoEvents(DispatcherPriority priority = DispatcherPriority.Background)
+        {
+            var nestedFrame = new DispatcherFrame();
+            var exitOperation = Dispatcher.CurrentDispatcher.BeginInvoke(priority, ExitFrameCallback, nestedFrame);
 
-            //execute all next message
-            Dispatcher.PushFrame(nestedFrame);
+            try
+            {
+                //execute all next message
+                Dispatcher.PushFrame(nestedFrame);
 
-            //If not completed, will stop it
-            if (exitOperation.Status != DispatcherOperationStatus.Completed)
+                //If not completed, will stop it
+                if (exitOperation.Status != DispatcherOperationStatus.Completed)
+                    exitOperation.Abort();
+            }
+            catch
+            {
                 exitOperation.Abort();
-            
+            }
+
         }
 
         private static Object ExitFrame(Object state)
         {
-            DispatcherFrame frame = state as DispatcherFrame;
-
             // exit the message loop
-            frame.Continue = false;
+            if (state is DispatcherFrame frame)
+                frame.Continue = false;
+
             return null;
         }
     }
