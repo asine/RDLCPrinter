@@ -1,4 +1,11 @@
-﻿using System;
+﻿//////////////////////////////////////////////
+// MIT - 2012-2020
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributor : Martin Savard (2013)
+// https://github.com/abbaye/RDLCPrinter
+//////////////////////////////////////////////
+
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,10 +16,6 @@ namespace DSoft.RDLC
     /// <summary>
     /// RDLCSlider
     /// <remarks>
-    /// CREDIT : 2013-2018 Derek Tremblay (abbaye), 2013 Martin Savard
-    /// https://github.com/abbaye/RDLCPrinter
-    /// </remarks>
-    /// </summary>
     public partial class LightDoubleSlider : UserControl
     {
         private double _sliderMinimum;
@@ -30,10 +33,7 @@ namespace DSoft.RDLC
 
 
 
-        public LightDoubleSlider()
-        {
-            InitializeComponent();
-        }
+        public LightDoubleSlider() => InitializeComponent();
 
 
         #region Properties
@@ -68,7 +68,6 @@ namespace DSoft.RDLC
             {
                 _sliderMaximum = value;
                 ChartSlider.Maximum = _sliderMaximum;
-
             }
         }
 
@@ -167,8 +166,7 @@ namespace DSoft.RDLC
                 _sliderValue = value;
                 ChartSlider.Value = _sliderValue;
 
-                if (ValueChanged != null)
-                    ValueChanged(this, new EventArgs());
+                ValueChanged?.Invoke(this, new EventArgs());
             }
         }
         #endregion //Properties
@@ -178,33 +176,29 @@ namespace DSoft.RDLC
         private void FirstButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateButton();
-            
-            if (FirstButtonClick != null)
-                FirstButtonClick(this, new EventArgs());
+
+            FirstButtonClick?.Invoke(this, new EventArgs());
         }
 
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateButton();
 
-            if (PrevioustButtonClick != null)
-                PrevioustButtonClick(this, new EventArgs());
+            PrevioustButtonClick?.Invoke(this, new EventArgs());
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateButton();
 
-            if (NextButtonClick != null)
-                NextButtonClick(this, new EventArgs());
+            NextButtonClick?.Invoke(this, new EventArgs());
         }
 
         private void LastButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateButton();
 
-            if (LastButtonClick != null)
-                LastButtonClick(this, new EventArgs());
+            LastButtonClick?.Invoke(this, new EventArgs());
         }
 
         private void ChartSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -213,14 +207,12 @@ namespace DSoft.RDLC
 
             UpdateButton();
 
-            if (ValueChanged != null)
-                ValueChanged(this, new EventArgs());
+            ValueChanged?.Invoke(this, new EventArgs());
         }
 
         #endregion //Events.
-
-
-        #region Methode
+        
+        #region Method
 
         public void UpdateButton()
         {
@@ -243,7 +235,7 @@ namespace DSoft.RDLC
             else
             {
                 NextButton.EnableButton();
-                LastButton.EnableButton(); 
+                LastButton.EnableButton();
             }
         }
         #endregion //Methode

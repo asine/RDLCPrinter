@@ -1,4 +1,11 @@
-﻿using System;
+﻿//////////////////////////////////////////////
+// MIT - 2012-2020
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributor : Martin Savard (2013)
+// https://github.com/abbaye/RDLCPrinter
+//////////////////////////////////////////////
+
+using System;
 using System.Windows;
 using DSoft.MethodExtension;
 
@@ -6,10 +13,6 @@ namespace DSoft.RDLCReport
 {
     /// <summary>
     /// LightIntegerSpinner
-    /// <remarks>
-    /// CREDIT : 2013-2014 Derek Tremblay (abbaye)
-    /// https://github.com/abbaye/RDLCPrinter
-    /// </remarks>
     /// </summary>
     public partial class LightIntegerSpinner
     {
@@ -23,10 +26,7 @@ namespace DSoft.RDLCReport
         private bool _IsShowCurrentToMaximumValue;
 
 
-        public LightIntegerSpinner()
-        {
-            InitializeComponent();
-        }
+        public LightIntegerSpinner() => InitializeComponent();
 
         public int? Value
         {
@@ -34,10 +34,9 @@ namespace DSoft.RDLCReport
             {
                 try
                 {
-                    if (_IsShowCurrentToMaximumValue)                    
-                        return Convert.ToInt32(NumPager.Text.Split('/')[0].Trim());                    
-                    else                    
-                        return Convert.ToInt32(NumPager.Text);                    
+                    return _IsShowCurrentToMaximumValue 
+                        ? Convert.ToInt32(NumPager.Text.Split('/')[0].Trim()) 
+                        : Convert.ToInt32(NumPager.Text);
                 }
                 catch
                 {
@@ -46,17 +45,12 @@ namespace DSoft.RDLCReport
             }
             set
             {
-                if (_IsShowCurrentToMaximumValue)
-                {
-                    NumPager.Text = value + " / " + _maximum;
-                }else
-                    NumPager.Text = value.ToString();
+                NumPager.Text = _IsShowCurrentToMaximumValue ? value + " / " + _maximum : value.ToString();
 
                 CheckRange();
                 UpdateButton();
 
-                if (ValueChanged != null)
-                    ValueChanged(this, new EventArgs());
+                ValueChanged?.Invoke(this, new EventArgs());
             }
         }
 
@@ -70,10 +64,7 @@ namespace DSoft.RDLCReport
             {
                 _isShowSpinnerButton = value;
 
-                if (value)
-                    ButtonColumn.Width = new GridLength(20);
-                else
-                    ButtonColumn.Width = new GridLength(0);
+                ButtonColumn.Width = value ? new GridLength(20) : new GridLength(0);
             }
         }
 
@@ -132,25 +123,21 @@ namespace DSoft.RDLCReport
                 Value = Value;
             }
         }
-        
+
 
         private void CheckRange()
-        { 
+        {
 
             if (Value > _maximum)
             {
                 Value = _maximum;
-
-                if (ValueChanged != null)
-                    ValueChanged(this, new EventArgs());
+                ValueChanged?.Invoke(this, new EventArgs());
             }
 
             if (Value < _minimum)
             {
                 Value = _minimum;
-
-                if (ValueChanged != null)
-                    ValueChanged(this, new EventArgs());
+                ValueChanged?.Invoke(this, new EventArgs());
             }
         }
 
@@ -162,8 +149,7 @@ namespace DSoft.RDLCReport
             CheckRange();
             UpdateButton();
 
-            if (UpButtonClick != null)
-                UpButtonClick(this, new EventArgs());
+            UpButtonClick?.Invoke(this, new EventArgs());
         }
 
         private void SpinnerDown_Click(object sender, RoutedEventArgs e)
@@ -174,8 +160,7 @@ namespace DSoft.RDLCReport
             CheckRange();
             UpdateButton();
 
-            if (DownButtonClick != null)
-                DownButtonClick(this, new EventArgs());
+            DownButtonClick?.Invoke(this, new EventArgs());
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
